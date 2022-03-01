@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <img src="{% static 'img/img2.png' %}" width="1124" height="260" class="d-inline-block align-top" alt="">
+  <div class="row">
+  <h1>Вот что я умею</h1>
+  <article class="col-12 col-md-9">
+    <p>Для создания данного сайта использовались следующие технологии</p>
+  </article>
+  <p>
+  <aside class="col-12 col-md-3">
+    <ul>
+      <li>
+        Python
+      </li>
+      <li>
+        Django
+      </li>
+      <li>
+        html
+      </li>
+      <li>
+        css
+      </li>
+    </ul>
+  </aside>
+  </P>
+  </div>
+</div>
+{% endblock %} 
