@@ -11,7 +11,7 @@ from .utils import pages
 
 @cache_page(20, key_prefix='index_page')
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('group').all()
     page_obj = pages(request, posts, settings.POSTS_NUM)
     template = 'posts/index.html'
     context = {
@@ -119,12 +119,11 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    user = request.user
-    following = Follow.objects.filter(user=user)
-    auth_list = []
-    for auth in following:
-        auth_list.append(auth.author)
-    posts = Post.objects.all().filter(author__in=auth_list)
+    posts = Post.objects.filter(
+        author__in=request.user.follower.all().values_list(
+            'author', flat=True
+        )
+    )
     page_obj = pages(request, posts, settings.POSTS_NUM)
     context = {
         'page_obj': page_obj,
@@ -136,16 +135,14 @@ def follow_index(request):
 def profile_follow(request, username):
     auth = get_object_or_404(User, username=username)
     user = request.user
-    if user == auth or Follow.objects.filter(user=user, author=auth).exists():
+    if user == auth:
         return redirect('posts:index')
-    else:
-        Follow.objects.create(user=user, author=auth)
-        return redirect('posts:follow_index')
+    Follow.objects.get_or_create(user=user, author=auth)
+    return redirect('posts:follow_index')
 
 
 @login_required
 def profile_unfollow(request, username):
     auth = get_object_or_404(User, username=username)
-    user = request.user
-    Follow.objects.filter(user=user, author=auth).delete()
+    Follow.objects.filter(user=request.user, author=auth).delete()
     return redirect('posts:profile', username=auth)

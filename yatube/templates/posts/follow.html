@@ -5,9 +5,6 @@
 {% endblock  %} 
 {% block content %}
   <main>
-    {% if page_obj|length == 0 %}
-     <h5>У Вас нет избранных авторов.</h5>
-    {% else %}
     <div class="container py-5">
       {% include 'includes/switcher.html' %}     
       <h1>{{ title }}</h1> 
@@ -30,16 +27,17 @@
           {{ post.text }}
         </p>
         <p>
-        <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a>
+         <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a>
         </p>
         {% if post.group %}    
           <a href="{% url 'posts:group_list' post.group.slug %}" >все записи группы</a>
         {% endif %}
         {% if not forloop.last %}<hr>{% endif %}
+        {% empty %}
+        <h5>У Вас нет избранных авторов.</h5>
       {% endfor %}
       {% include 'includes/paginator.html' %} 
       </article>
-    {% endif %}
     </div>
   </main>
 {% endblock %}

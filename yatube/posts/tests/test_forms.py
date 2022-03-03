@@ -79,7 +79,7 @@ class PostCreateFormTests(TestCase):
                 id=latest_post.id,
                 text=form_data['text'],
                 group=form_data['group'],
-                image=latest_post.image
+                image='posts/' + form_data['image'].__str__()
             ).exists()
         )
 
@@ -140,6 +140,7 @@ class PostCreateFormTests(TestCase):
         self.assertTrue(
             Comment.objects.filter(
                 id=latest_comment.id,
+                post=PostCreateFormTests.post.id,
                 text=form_data['text'],
             ).exists()
         )

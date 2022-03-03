@@ -191,7 +191,7 @@ class PostViewsTest(TestCase):
         posts = response.context.get('page_obj').object_list
         self.assertNotIn(self.post, posts)
 
-    def test_follow_unfollow(self):
+    def test_follow(self):
         self.authorized_client_not_sub.get(
             reverse(
                 'posts:profile_follow', kwargs={
@@ -205,6 +205,17 @@ class PostViewsTest(TestCase):
                 author=PostViewsTest.user
             ).exists()
         )
+
+    def test_unfollow(self):
+        Follow.objects.create(
+            user=self.not_sub_user,
+            author=PostViewsTest.user
+        )
+        self.assertTrue(
+            Follow.objects.filter(
+                user=self.not_sub_user,
+                author=PostViewsTest.user
+            ).exists())
         self.authorized_client_not_sub.get(
             reverse(
                 'posts:profile_unfollow', kwargs={
@@ -263,6 +274,10 @@ class PostViewsTest(TestCase):
         second_response = self.client.get(reverse('posts:index'))
         second_content = second_response.content
         self.assertEqual(first_content, second_content)
+        cache.clear()
+        third_response = self.client.get(reverse('posts:index'))
+        third_content = third_response.content
+        self.assertNotEqual(second_content, third_content)
 
 
 class PaginatorViewsTest(TestCase):

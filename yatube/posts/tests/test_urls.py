@@ -105,7 +105,7 @@ class PostUrlTests(TestCase):
         urls_template = {
             f'/posts/{PostUrlTests.post.id}/edit/':
             f'/posts/{PostUrlTests.post.id}/',
-            f'/profile/{PostUrlTests.user}/follow/': '/',
+            f'/profile/{PostUrlTests.user}/follow/': '/follow/',
             f'/profile/{PostUrlTests.user}/unfollow/':
             f'/profile/{PostUrlTests.user}/'
         }
